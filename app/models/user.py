@@ -1,7 +1,6 @@
 from sqlalchemy import Column, String, Integer, Boolean
 from sqlalchemy.orm import relationship
 from database.db import Base
-from .post import Post
 
 # Representa uma tabela do DB ao herdar do Base
 class User(Base):
