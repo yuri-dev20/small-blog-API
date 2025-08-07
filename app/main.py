@@ -1,10 +1,11 @@
 from fastapi import FastAPI
-from database.db import Base, engine
+from app.database.db import Base, engine
 
-from routers import user
-from routers import post
+from app.routers import user
+from app.routers import post
 
-Base.metadata.create_all(bind=engine)
+# Enquanto desenvolvo testes isso fica fora pois não quero que o outra DB seja criada 
+# Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Small Blog")
 
