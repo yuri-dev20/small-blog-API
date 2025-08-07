@@ -9,7 +9,8 @@ from app.schemas.user import UserOut, UserCreate, UserUpdate
 from app.crud.user import (
     crud_create_user,
     crud_read_users,
-    crud_read_user
+    crud_read_user,
+    crud_update_user
 )
 
 router = APIRouter(
@@ -21,12 +22,11 @@ router = APIRouter(
 def create_user(db: Annotated[Session, Depends(get_db)], new_user: UserCreate):
     # Annotated permite introduzir/adcionar metadados
     # Traduzindo para português ficaria tipo: 'Crie um parâmetro chamado db que é do tipo Session, e para obter seu valor, execute a função get_db()'
-
-    user_verify = db.query(User).filter(User.email == new_user.email).first()
-    if user_verify:
-        raise HTTPException(status_code=409, detail='Email já cadastrado')
-
     response = crud_create_user(db, new_user)
+    
+    if not response:
+        raise HTTPException(status_code=409, detail='Email já cadastrado')
+    
     return response
 
 # GET/READ users
@@ -42,3 +42,14 @@ def get_users(db: Annotated[Session, Depends(get_db)], limit: int = None):
 @router.get('/{user_id}', response_model=UserOut)
 def get_user(db: Annotated[Session, Depends(get_db)], user_id: int):
     return crud_read_user(db, user_id)
+
+# UPDATE user
+@router.put('/{user_id}', response_model=UserOut)
+def update_user(db: Annotated[Session, Depends(get_db)], update_user_data: UserUpdate, user_id: int):
+    user = crud_update_user(db, update_user_data, user_id)
+    
+    if not user:
+        raise HTTPException(status_code=404, detail=f"Usuário de id: {user_id} não encontrado")
+    
+    else:
+        return user

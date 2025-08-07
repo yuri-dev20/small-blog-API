@@ -1,5 +1,6 @@
 from sqlalchemy import select
 from sqlalchemy.orm import Session
+from fastapi import HTTPException
 
 from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
@@ -9,6 +10,10 @@ from app.schemas.user import UserCreate, UserUpdate
 # TODO: Criar TESTES
 # CREATE user
 def crud_create_user(db: Session, new_user: UserCreate):
+    user_verify = db.query(User).filter(User.email == new_user.email).first()
+    if user_verify:
+        return None
+    
     # Conversão para dict
     user_data = new_user.model_dump() # <-------- faz a conversão para dict, diferente de model_config
 
@@ -34,5 +39,34 @@ def crud_read_users(db: Session):
 def crud_read_user(db: Session, id: int):
     # Bagulho verboso do diacho, aparentemente where é prefirido ao invés de filter
     return db.execute(select(User).where(User.id == id)).scalars().one_or_none()
+
 # UPDATE user
+def crud_update_user(db: Session, update_user_data: UserUpdate, user_id: int):
+    user = db.execute(select(User).where(User.id == user_id)).scalars().one_or_none()
+
+    if user:
+
+        if update_user_data.name is not None:
+            user.name = update_user_data.name
+        
+        if update_user_data.email is not None:
+            user.email = update_user_data.email
+        
+        if update_user_data.password is not None:
+            user.password = update_user_data.password
+
+        if update_user_data.admin is not None:
+            user.admin = update_user_data.admin
+
+        if update_user_data.user_active is not None:
+            user.user_active = update_user_data.user_active
+
+
+        db.commit()
+        db.refresh(user)
+        return user
+    
+    else:
+        return None
+
 # DELETE user

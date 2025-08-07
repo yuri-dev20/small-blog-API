@@ -85,3 +85,32 @@ def test_read_user(client_test, sample_user):
     assert 'password' not in data
     assert data['name'] == 'Jhon Doe'
     assert data['email'] == 'jhondoe@gmail.com'
+
+def test_update_user(client_test, sample_user):
+    payload = {
+        "name": "Sam Deo", 
+        "email": "samdeo@gmail.com", 
+        "password": "batatinha789", 
+        "admin": True, 
+        "user_active": False
+    }
+
+    response = client_test.put('/users/1', json = payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert 'password' not in data
+    assert data['name'] == "Sam Deo"
+    assert data['email'] == "samdeo@gmail.com"
+
+
+def test_update_user_not_exist(client_test, sample_user):
+    payload = {
+        "name": "Sam Deo", 
+        "email": "samdeo@gmail.com", 
+        "password": "batatinha789", 
+        "admin": True, 
+        "user_active": False
+    }
+
+    response = client_test.put('/users/50', json = payload)
+    assert response.status_code == 404
