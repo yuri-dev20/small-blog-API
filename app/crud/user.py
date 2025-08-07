@@ -20,7 +20,19 @@ def crud_create_user(db: Session, new_user: UserCreate):
     db.refresh(user) # Segundo discussões ele sincroniza o objeto com a versão que está no banco de dados
 
     return user
-# GET user
+
 # GET users
+def crud_read_users(db: Session):
+    # db.execute = executa uma query
+    # select(User) = similar a query SQL
+    # scalars() = converte o Result em objetos da sua classe ORM ja que sem isso seriam retornados tuplas
+    # all() - vira uma lista
+    # alternativa ao all()  mas muito legal é o one_or_none()
+    return db.execute(select(User)).scalars().all()
+
+# GET users
+def crud_read_user(db: Session, id: int):
+    # Bagulho verboso do diacho, aparentemente where é prefirido ao invés de filter
+    return db.execute(select(User).where(User.id == id)).scalars().one_or_none()
 # UPDATE user
 # DELETE user

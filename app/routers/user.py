@@ -7,7 +7,9 @@ from app.models.user import User
 from app.schemas.user import UserOut, UserCreate, UserUpdate
 
 from app.crud.user import (
-    crud_create_user
+    crud_create_user,
+    crud_read_users,
+    crud_read_user
 )
 
 router = APIRouter(
@@ -26,3 +28,17 @@ def create_user(db: Annotated[Session, Depends(get_db)], new_user: UserCreate):
 
     response = crud_create_user(db, new_user)
     return response
+
+# GET/READ users
+@router.get('/', response_model=List[UserOut])
+def get_users(db: Annotated[Session, Depends(get_db)], limit: int = None):
+    if limit:
+        users = crud_read_users(db)
+        return users[:limit]
+    
+    else:
+        return crud_read_users(db)
+
+@router.get('/{user_id}', response_model=UserOut)
+def get_user(db: Annotated[Session, Depends(get_db)], user_id: int):
+    return crud_read_user(db, user_id)
