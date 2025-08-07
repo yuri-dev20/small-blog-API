@@ -10,7 +10,8 @@ from app.crud.user import (
     crud_create_user,
     crud_read_users,
     crud_read_user,
-    crud_update_user
+    crud_update_user,
+    crud_delete_user
 )
 
 router = APIRouter(
@@ -48,6 +49,17 @@ def get_user(db: Annotated[Session, Depends(get_db)], user_id: int):
 def update_user(db: Annotated[Session, Depends(get_db)], update_user_data: UserUpdate, user_id: int):
     user = crud_update_user(db, update_user_data, user_id)
     
+    if not user:
+        raise HTTPException(status_code=404, detail=f"Usuário de id: {user_id} não encontrado")
+    
+    else:
+        return user
+    
+# DELETE user
+@router.delete('/{user_id}', response_model=UserOut)
+def delete_user(db: Annotated[Session, Depends(get_db)], user_id: int):
+    user = crud_delete_user(db, user_id)
+
     if not user:
         raise HTTPException(status_code=404, detail=f"Usuário de id: {user_id} não encontrado")
     

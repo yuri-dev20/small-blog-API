@@ -114,3 +114,16 @@ def test_update_user_not_exist(client_test, sample_user):
 
     response = client_test.put('/users/50', json = payload)
     assert response.status_code == 404
+
+def test_delete_user(client_test, sample_user):
+    response = client_test.delete('/users/1')
+
+    assert response.status_code == 200
+    data = response.json()
+    assert data['name'] == 'Jhon Doe'
+    assert data['email'] == 'jhondoe@gmail.com'
+
+def test_delete_user_not_exist(client_test, sample_user):
+    response = client_test.delete('/users/50')
+
+    assert response.status_code == 404

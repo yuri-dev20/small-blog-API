@@ -70,3 +70,14 @@ def crud_update_user(db: Session, update_user_data: UserUpdate, user_id: int):
         return None
 
 # DELETE user
+def crud_delete_user(db: Session, user_id: int):
+    user = db.execute(select(User).where(User.id == user_id)).scalar_one_or_none()
+
+    if user:
+        db.delete(user)
+        db.commit()
+    
+        return user
+    
+    else:
+        return None
