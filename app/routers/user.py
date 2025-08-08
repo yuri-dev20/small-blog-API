@@ -3,7 +3,6 @@ from sqlalchemy.orm import Session
 from typing import List, Annotated
 from app.database.db import get_db
 
-from app.models.user import User
 from app.schemas.user import UserOut, UserCreate, UserUpdate
 
 from app.crud.user import (
