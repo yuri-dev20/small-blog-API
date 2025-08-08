@@ -9,7 +9,8 @@ from app.crud.post import (
     crud_create_post,
     crud_read_all_posts,
     crud_read_post,
-    crud_update_post
+    crud_update_post,
+    crud_delete_post
 )
 
 router = APIRouter(
@@ -58,6 +59,16 @@ Isso é provisorio pois a ideia e usar JWT no projeto e bcrypt no projeto ainda
 @router.put('/{post_id}', response_model=PostOut)
 def update_post(db: Annotated[Session, Depends(get_db)], user_id: int, post_id: int, update_post_data: PostUpdate):
     post = crud_update_post(db, user_id, post_id, update_post_data)
+
+    if not post:
+        raise HTTPException(status_code=404, detail=f"Post não encontrado ou não pertence ao usuário")
+    
+    return post
+
+# DELETE post
+@router.delete('/{post_id}', response_model=PostOut)
+def delete_post(db: Annotated[Session, Depends(get_db)], user_id: int, post_id: int):
+    post = crud_delete_post(db, user_id, post_id)
 
     if not post:
         raise HTTPException(status_code=404, detail=f"Post não encontrado ou não pertence ao usuário")

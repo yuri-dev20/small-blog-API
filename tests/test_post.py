@@ -94,3 +94,14 @@ def test_update_fails_when_post_is_not_owned_by_user(client_test, sample_user, s
     response = client_test.put(f"/users/{sample_user.id}/posts/9999999999", json=payload)
     assert response.status_code == 404
     assert response.json()['detail'] == "Post não encontrado ou não pertence ao usuário"
+
+def test_deleting_a_post(client_test, sample_user, sample_post):
+    delete_response = client_test.delete(f"/users/{sample_user.id}/posts/1")
+    get_response = client_test.get(f"/users/1/posts/1")
+    
+    assert get_response.status_code == 404
+    assert delete_response.status_code == 200
+    data = delete_response.json()
+    assert data['title'] == "Testing post"
+    assert data['text'] == "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+    assert data['owner_id'] == 1

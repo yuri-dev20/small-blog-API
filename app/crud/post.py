@@ -65,3 +65,18 @@ def crud_update_post(db: Session, user_id: int, post_id: int, post_update_data: 
     return post
 
 # DELETE post
+def crud_delete_post(db: Session, user_id: int, post_id: int):
+    user = db.get(User, user_id)
+
+    if not user:
+        return None
+    
+    post = db.execute(select(Post).where((Post.owner_id == user_id) & (Post.id == post_id))).scalar_one_or_none()
+
+    if not post:
+        return None
+    
+    db.delete(post)
+    db.commit()
+
+    return post
