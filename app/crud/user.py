@@ -7,7 +7,6 @@ from app.schemas.user import UserCreate, UserUpdate
 
 # CRUD
 
-# TODO: Criar TESTES
 # CREATE user
 def crud_create_user(db: Session, new_user: UserCreate):
     user_verify = db.query(User).filter(User.email == new_user.email).first()
