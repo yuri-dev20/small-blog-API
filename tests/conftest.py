@@ -78,3 +78,17 @@ def sample_user(db_test):
     db_test.refresh(user)
     
     return user
+
+@pytest.fixture
+def sample_post(db_test, sample_user):
+    post = Post(
+        title="Testing post",
+        text="Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+        owner_id=sample_user.id
+    )
+
+    db_test.add(post)
+    db_test.commit()
+    db_test.refresh(post)
+    
+    return post
