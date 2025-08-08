@@ -22,8 +22,23 @@ def crud_create_post(db: Session, user_id: int, new_post: PostCreate):
     db.refresh(post)
 
     return post
+
+# READ posts
+def crud_read_all_posts(db: Session, user_id: int):
+    user = db.get(User, user_id)
+
+    if not user:
+        return None
+    # isso diz 'execute uma query SQL JOIN buscando todos os posts que pertencem ao usuário de id tal'
+    return db.execute(select(Post).where(Post.owner_id == user_id)).scalars().all()
+
+# READ post
+def crud_read_post(db: Session, user_id: int, post_id: int):
+    user = db.get(User, user_id)
+
+    if not user:
+        return None
     
-# GET post
-# GET posts
+    return db.execute(select(Post).where((Post.owner_id == user_id) & (Post.id == post_id))).scalar_one_or_none()
 # UPDATE post
 # DELETE post

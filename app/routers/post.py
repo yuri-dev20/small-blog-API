@@ -7,6 +7,8 @@ from app.schemas.post import PostCreate, PostOut, PostUpdate
 
 from app.crud.post import (
     crud_create_post,
+    crud_read_all_posts,
+    crud_read_post
 )
 
 router = APIRouter(
@@ -15,6 +17,7 @@ router = APIRouter(
     tags=['Posts']
 )
 
+# CREATE post
 @router.post('/', response_model=PostOut)
 def create_post(db: Annotated[Session, Depends(get_db)], user_id: int, new_post: PostCreate):
     post = crud_create_post(db, user_id, new_post)
@@ -24,3 +27,25 @@ def create_post(db: Annotated[Session, Depends(get_db)], user_id: int, new_post:
     
     return post
     
+# GET posts
+@router.get('/', response_model=List[PostOut])
+def get_all_posts(db: Annotated[Session, Depends(get_db)], user_id: int, limit: int = None):
+    posts = crud_read_all_posts(db, user_id)
+    
+    if not posts:
+        raise HTTPException(status_code=404, detail=f"Usuário de id {user_id} não existe")
+    
+    if limit:   
+        return posts[:limit]
+    
+    return posts
+
+# GET post
+@router.get('/{post_id}', response_model=PostOut)
+def get_post(db: Annotated[Session, Depends(get_db)], user_id: int, post_id: int):
+    post = crud_read_post(db, user_id, post_id) 
+    
+    if not post:
+        raise HTTPException(status_code=404, detail=f"Usuário de id {user_id} não existe")
+    
+    return post
