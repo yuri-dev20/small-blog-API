@@ -4,6 +4,7 @@ from fastapi import HTTPException
 
 from app.models.user import User
 from app.schemas.user import UserCreate, UserUpdate
+from app.auth.security import get_password_hash
 
 # CRUD
 
@@ -17,7 +18,13 @@ def crud_create_user(db: Session, new_user: UserCreate):
     user_data = new_user.model_dump() # <-------- faz a conversão para dict, diferente de model_config
 
     # '**' desempacota
-    user = User(**user_data)
+    user = User(
+        name=user_data["name"],
+        email=user_data["email"],
+        password=get_password_hash(user_data["password"]),
+        admin=user_data["admin"],
+        user_active=user_data["user_active"],
+    )
 
     db.add(user)
     db.commit()
@@ -39,6 +46,10 @@ def crud_read_user(db: Session, id: int):
     # Bagulho verboso do diacho, aparentemente where é prefirido ao invés de filter
     return db.execute(select(User).where(User.id == id)).scalars().one_or_none()
 
+# GET user by email
+def crud_read_user_email(db: Session, user_email: str):
+    return db.execute(select(User).where(User.email == user_email)).scalar_one_or_none()
+
 # UPDATE user
 def crud_update_user(db: Session, update_user_data: UserUpdate, user_id: int):
     user = db.execute(select(User).where(User.id == user_id)).scalars().one_or_none()
@@ -52,7 +63,7 @@ def crud_update_user(db: Session, update_user_data: UserUpdate, user_id: int):
             user.email = update_user_data.email
         
         if update_user_data.password is not None:
-            user.password = update_user_data.password
+            user.password = get_password_hash(update_user_data.password)
 
         if update_user_data.admin is not None:
             user.admin = update_user_data.admin
