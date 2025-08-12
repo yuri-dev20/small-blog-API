@@ -11,6 +11,7 @@ from app.main import app, Base
 from app.database.db import get_db
 from app.models.user import User
 from app.models.post import Post
+from app.auth.security import get_password_hash
 
 # Banco fake SQLite
 DB_URL = 'sqlite:///./test_blog.db'
@@ -68,7 +69,7 @@ def sample_user(db_test):
     user = User(
         name="Jhon Doe",
         email="jhondoe@gmail.com",
-        password="coxinha123",
+        password=get_password_hash("coxinha123"),
         admin=0,
         user_active=1
     )
