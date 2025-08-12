@@ -49,10 +49,10 @@ def create_access_token(data: dict, expire_delta: timedelta | None = None):
     to_encode = data.copy()
     
     if expire_delta:
-        expire = datetime.now(timezone.UTC) + expire_delta
+        expire = datetime.now(timezone.utc) + expire_delta
 
     else:
-        expire = datetime.now(timezone.UTC) + timedelta(minutes=ACCESS_TOKEN_EXPIRE)
+        expire = datetime.now(timezone.utc) + timedelta(minutes=ACCESS_TOKEN_EXPIRE)
 
     # Uma informação padrão dentro do token é o 'exp' que define o tempo de vida do token e aki estamos a adcionando
     to_encode.update({
