@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from app.schemas.token import TokenData
 from app.auth.service import get_user
+from app.database.db import get_db
 
 import jwt
 import os
@@ -62,7 +63,7 @@ def create_access_token(data: dict, expire_delta: timedelta | None = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt # O resultado é uma string codificada que representa o token seguro
 
-def get_current_user(db: Session, token: Annotated[str, Depends(oauth2_scheme)]):
+def get_current_user(db: Annotated[Session, Depends(get_db)], token: Annotated[str, Depends(oauth2_scheme)]):
     credentials_exception = HTTPException(
         status_code=401,
         detail='Could not validate credentials',
