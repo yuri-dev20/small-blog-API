@@ -13,6 +13,8 @@ operações em rotas de Post.
 - [Pydantic](https://docs.pydantic.dev/latest/)
 - [PyJWT](https://pyjwt.readthedocs.io/en/stable/)
 - [passlib](https://passlib.readthedocs.io/en/stable/)
+- [PyTest](https://docs.pytest.org/en/stable/)
+- [dotenv](https://pypi.org/project/python-dotenv/)
 
 
 ## Instalação
