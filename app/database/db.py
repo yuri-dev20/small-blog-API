@@ -5,7 +5,7 @@ from sqlalchemy import create_engine, event
 Engine que é usado 'conversar' com o BD
 connect_args={'check_same_thread': False - permite que a mesma conexão com o banco de dados seja usada por vária threads
 """
-engine = create_engine('sqlite:///mydb.db', connect_args={'check_same_thread': False}, echo=True)
+engine = create_engine('sqlite:///mydb.db', connect_args={'check_same_thread': False})
 
 # uma sessão seria um 'operador' que faz as operações com o banco e aqui ele é definido
 SessionLocal = sessionmaker(bind=engine, autocommit=False)
