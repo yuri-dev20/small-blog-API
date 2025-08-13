@@ -9,9 +9,9 @@ from app.auth.service import auth_user
 from app.database.db import get_db
 from app.auth.security import ACCESS_TOKEN_EXPIRE, create_access_token
 
-router = APIRouter(prefix='/login')
+router = APIRouter(prefix='', tags=["Login User"])
 
-@router.post('/')
+@router.post('/login', include_in_schema=False)
 def login_for_access_token(db: Annotated[Session, Depends(get_db)], form_data: Annotated[OAuth2PasswordRequestForm, Depends()],) -> Token:
     user = auth_user(db, form_data.username, form_data.password) # form_data.username no caso do meu projeto recebe um email
 
